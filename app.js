@@ -4,14 +4,12 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var {buildSchema, GraphQLObjectType, GraphQLInt, GraphQLSchema} =require('graphql');
 var graphqlHTTP = require('express-graphql');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
 
-var wordCellSchema = require ('./graphQL/schema/Schema')
-var mockDB = require('./graphQL/schema/mockDB')
+var schema = require ('./graphQL/schema/Schema')
 
 var app = express();
 
@@ -31,24 +29,6 @@ app.use('/', index);
 app.use('/users', users);
 
 // GraphQL Endpoint.
-
-var queryType = new GraphQLObjectType({
-  name: 'Query',
-  fields: {
-    wordCell: {
-      type: wordCellSchema,
-      args: {
-        index: { type: GraphQLInt}
-      },
-      resolve: function (_, {index}) {
-        return mockDB[index];
-      }
-    }
-  } 
-})
-
-var schema = new GraphQLSchema({ query: queryType });
-
 app.use('/graphql', graphqlHTTP({
   schema: schema,
   graphiql: true,

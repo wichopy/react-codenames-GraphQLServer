@@ -1,3 +1,10 @@
+var faker = require('faker');
+
+const RandomNumber = (min, max) => {
+  let randomNumber = Math.floor(Math.random() * max) + min;
+  return randomNumber;
+}
+
 const mockDB = [
   {index: 0, isEnabled: true, type: 'Red', word: 'balugas'},
   {index: 1, isEnabled: true, type: 'Blue', word: 'balugas'},
@@ -24,7 +31,11 @@ const mockDB = [
   {index: 22, isEnabled: true, type: 'Red', word: 'balugas'},
   {index: 23, isEnabled: true, type: 'Red', word: 'balugas'},
   {index: 24, isEnabled: true, type: 'Blue', word: 'balugas'},
-  {index: 25, isEnabled: true, type: 'Red', word: 'balugas'},
 ];
+
+for(let i = 0; i < mockDB.length; i++) {
+  let newWord = faker.random.word();
+  mockDB[i] = Object.assign(mockDB[i], { word: newWord });
+}
 
 module.exports = mockDB;
