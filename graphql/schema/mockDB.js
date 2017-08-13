@@ -5,33 +5,51 @@ const RandomNumber = (min, max) => {
   return randomNumber;
 }
 
-const mockDB = [
-  {index: 0, isEnabled: true, type: 'Red', word: 'balugas'},
-  {index: 1, isEnabled: true, type: 'Blue', word: 'balugas'},
-  {index: 2, isEnabled: true, type: 'Red', word: 'balugas'},
-  {index: 3, isEnabled: true, type: 'Civilian', word: 'balugas'},
-  {index: 4, isEnabled: true, type: 'Red', word: 'balugas'},
-  {index: 5, isEnabled: true, type: 'Red', word: 'balugas'},
-  {index: 6, isEnabled: true, type: 'Blue', word: 'balugas'},
-  {index: 7, isEnabled: true, type: 'Red', word: 'balugas'},
-  {index: 8, isEnabled: true, type: 'Red', word: 'balugas'},
-  {index: 9, isEnabled: true, type: 'Red', word: 'balugas'},
-  {index: 10, isEnabled: true, type: 'Blue', word: 'balugas'},
-  {index: 11, isEnabled: true, type: 'Blue', word: 'balugas'},
-  {index: 12, isEnabled: true, type: 'Red', word: 'balugas'},
-  {index: 13, isEnabled: true, type: 'Red', word: 'balugas'},
-  {index: 14, isEnabled: true, type: 'Red', word: 'balugas'},
-  {index: 15, isEnabled: true, type: 'Red', word: 'balugas'},
-  {index: 16, isEnabled: true, type: 'Blue', word: 'balugas'},
-  {index: 17, isEnabled: true, type: 'Red', word: 'balugas'},
-  {index: 18, isEnabled: true, type: 'Blue', word: 'balugas'},
-  {index: 19, isEnabled: true, type: 'Red', word: 'balugas'},
-  {index: 20, isEnabled: true, type: 'Red', word: 'balugas'},
-  {index: 21, isEnabled: true, type: 'Red', word: 'balugas'},
-  {index: 22, isEnabled: true, type: 'Red', word: 'balugas'},
-  {index: 23, isEnabled: true, type: 'Red', word: 'balugas'},
-  {index: 24, isEnabled: true, type: 'Blue', word: 'balugas'},
-];
+// default 5 x 5 grid
+const unindexedGridValues = Array(25).fill({ word: '', type: '', isEnabled: true });
+const uncoloredGrid = unindexedGridValues.map((cell, index) => { return Object.assign({}, cell, { index: index} ) });
+
+const setBackgrounds = (colorlessGrid, size) => {
+  const gridValues = colorlessGrid.concat();
+  let populateCount = 0;
+
+  //set red team 
+  for(let i = 0; i <= 8; i++){
+    let newRandomPosition = RandomNumber(0, size * size - 1 - populateCount);
+    gridValues[newRandomPosition].type = 'Red'
+    populateCount++;
+    gridValues.push(gridValues[newRandomPosition]);
+    gridValues.splice(newRandomPosition, 1);
+  }
+
+  //set blue team
+  for(let i = 0; i <= 7; i++){
+    let newRandomPosition = RandomNumber(0, size * size - 1 - populateCount);
+    gridValues[newRandomPosition].type = 'Blue'
+    populateCount++;
+    gridValues.push(gridValues[newRandomPosition]);
+    gridValues.splice(newRandomPosition, 1);
+  }
+
+  // set assassin
+  gridValues[0].type = 'Assassin';
+  populateCount++;
+  gridValues.push(gridValues[0]);
+  gridValues.splice(0, 1);
+
+  // set innocent peoples
+  for(let i = 0; i <= 6; i++){
+    let newRandomPosition = RandomNumber(0, size * size - 1 - populateCount);
+    gridValues[newRandomPosition].type = 'Innocent'
+    populateCount++;
+    gridValues.push(gridValues[newRandomPosition]);
+    gridValues.splice(newRandomPosition, 1);
+  }
+
+  return gridValues;
+}
+
+const mockDB = setBackgrounds (uncoloredGrid, 5)
 
 for(let i = 0; i < mockDB.length; i++) {
   let newWord = faker.random.word();
