@@ -22,30 +22,6 @@ const newWordCell = new GraphQLInputObjectType({
   })
 })
 
-
-  /* To query all cells: 
-
-    { 
-      wordCell {
-        index
-        word
-        type
-        isEnabled
-      }
-    }
-
-    To query a single cell:
-
-    { 
-      wordCell(index: 1) {
-        index
-        word
-        type
-        isEnabled
-      }
-    }
-*/
-
 var queryType = new GraphQLObjectType({
   name: 'Query',
   fields: {
