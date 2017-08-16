@@ -1,4 +1,5 @@
-var { GraphQLObjectType, GraphQLString, GraphQLBoolean, GraphQLInt, GraphQLSchema, GraphQLList } = require('graphql');
+var { GraphQLObjectType, GraphQLInputObjectType, GraphQLString, GraphQLBoolean, GraphQLInt, GraphQLSchema, GraphQLList } = require('graphql');
+
 var mockDB = require('./mockDB')
 
 const wordCell = new GraphQLObjectType({
@@ -11,7 +12,17 @@ const wordCell = new GraphQLObjectType({
   })
 })
 
-var queryType = new GraphQLObjectType({
+const newWordCell = new GraphQLInputObjectType({
+  name: 'newWordCell',
+  fields: () => ({
+    index: { type: GraphQLInt, description: 'Index of cell.' },
+    word: { type: GraphQLString, description: 'Word that populates cell'},
+    type: { type: GraphQLString, description: 'Team, Civilian, Assassin'},
+    isEnabled: { type: GraphQLBoolean, description: 'returns false if selected by user, true otherwise.' },
+  })
+})
+
+
   /* To query all cells: 
 
     { 
@@ -35,6 +46,7 @@ var queryType = new GraphQLObjectType({
     }
 */
 
+var queryType = new GraphQLObjectType({
   name: 'Query',
   fields: {
     wordCell: {
@@ -51,6 +63,33 @@ var queryType = new GraphQLObjectType({
   } 
 })
 
-var schema = new GraphQLSchema({ query: queryType });
+//https://medium.com/the-graphqlhub/your-first-graphql-server-3c766ab4f0a2
+//http://davidandsuzi.com/writing-a-basic-api-with-graphql/
+var mutationType = new GraphQLObjectType({
+  name: 'Mutation',
+  fields: {
+    updateCell: {
+      type: wordCell,
+      description: 'Update individual cell in grid.',
+      args: {
+        newCell: { type: newWordCell }
+      },
+      resolve: function(_, args) {
+        var indexToReplace = mockDB.find(function(element, index) {
+          if (element.index == args.newCell.index) {
+            return element
+          }
+        })
+        mockDB[indexToReplace.index] = args.newCell
+        return mockDB[indexToReplace.index]
+      }
+    }
+  }
+})
+
+var schema = new GraphQLSchema({ 
+  query: queryType,
+  mutation: mutationType
+});
 
 module.exports = schema
