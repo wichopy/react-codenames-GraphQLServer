@@ -49,13 +49,13 @@ const setBackgrounds = (colorlessGrid, size) => {
   return gridValues;
 }
 
-let  mockDB = setBackgrounds (uncoloredGrid, 5)
+let  wordGrid = setBackgrounds (uncoloredGrid, 5)
 
-for(let i = 0; i < mockDB.length; i++) {
+for(let i = 0; i < wordGrid.length; i++) {
   let newWord = faker.random.word();
-  mockDB[i] = Object.assign(mockDB[i], { word: newWord });
+  wordGrid[i] = Object.assign(wordGrid[i], { word: newWord });
 }
 
-mockDB = mockDB.sort((a,b) => a.index - b.index);
+wordGrid = wordGrid.sort((a,b) => a.index - b.index);
 
-module.exports = mockDB;
+module.exports = wordGrid;

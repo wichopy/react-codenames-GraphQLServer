@@ -20,14 +20,32 @@
       }
     }
 ```
-### To do a mutation:
+
+## Query the score
 ```
-    mutation {
-  updateCell(newCell: { index: 24, word: "Bob", type: "Red", isEnabled: false}) {
-    index
-    word
-    type
-    isEnabled
+  {
+    score {
+        Red
+        Blue
+    } 
   }
-}
+```
+
+### To do mutations:
+```
+  mutation {
+    updateCell(newCell: { index: 24, word: "Bob", type: "Red", isEnabled: false}) {
+      index
+      word
+      type
+      isEnabled
+    }
+  }
+
+  mutation {
+    updateScore(type: "Red") {
+      Red
+      Blue
+    }
+  } 
 ```
